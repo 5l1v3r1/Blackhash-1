@@ -1,0 +1,73 @@
+Blackhash - Audit Passwords Without Hashes
+
+Summary
+
+Use Bloom Filters to audit passwords. Audit passwords without direct access to
+password hashes.
+
+Password Audit Risks
+
+A traditional password audit typically involves extracting password hashes from
+systems and then sending those hashes to a third-party security auditor or an
+in-house security team. These security specialists have the knowledge and tools
+to effectively audit password hashes. They use password cracking software such
+as John the Ripper and Hashcat in an effort to uncover weak passwords.
+
+However, there are many risks associated with traditional password audits. The
+password hashes may be lost or stolen from the security team. A rogue security
+team member may secretly make copies of the password hashes. How would anyone
+know? Basically, once the password hashes are given to the security team, the
+system manager must simply trust that the password hashes are handled and
+disposed of securely and that access to the hashes is not abused.
+
+An auditor once told me, "Trust is not a control". That's a profound statement.
+Much of society operates on trust and we can't function without that, however,
+many situations require more than trust. Why should system managers trust
+security teams with their system password hashes? In many cases, passwords are
+the only measure in place to protect organizational data from the outside
+world. Even for the purpose of a security audit, handing over password hashes
+and trusting the security team to do the right thing poses a great risk to
+organizations. Only the system manager and his team should have access to
+password hashes. Extracting the hashes and giving them to someone else
+fundamentally compromises the security of the system.
+
+How To Audit Passwords Without Hashes
+
+I wrote a program that I call Blackhash. The name is taken from Black Box
+Testing "A method of software testing that examines the functionality of an
+application without peering into its internal structures or workings." It's a
+proof of concept to demonstrate one approach to auditing password hashes
+without actually having access to the hashes.
+
+Blackhash works by building a bloom filter from the system password hashes. The
+system manager extracts the password hashes and then uses Blackhash to build
+the filter. The filter is saved to a file, then compressed and given to the
+security team. The filter is just a bitset that contains ones and zeros. It
+does not contain the password hashes or any other information about the users
+or the accounts from the system. It's just a string of ones and zeros. You may
+view a Blackhash filter with a simple text editor. It will look similar to
+this, 00000100000001000100001.
+
+When the security team receives the filter, they use Blackhash to test it for
+known weak password hashes. If weak passwords are found, the security team
+creates a weak filter and sends that back to the system manager. Finally, the
+system manager tests the weak filter to identify individual users so that they
+can be contacted and asked to change passwords. Password Hashes Transform Into
+Bloom Filter
+
+Pros
+
+    * Password hashes never leave the system team.
+    * Works with any simple, un-salted hash. LM, NT, MD5, SHA1, etc.
+    * Security auditors do not have to transmit, handle or safe-guard the
+      password hashes.
+    * Anonymizes the users. The filter contains no data about the users at all.
+
+Cons
+
+    * Slower than traditional password cracking methods.
+    * More complex than traditional password cracking methods.
+    * Bloom Filters may produce a few false positives (very few in this case).
+
+End
+

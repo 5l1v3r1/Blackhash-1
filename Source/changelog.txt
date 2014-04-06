@@ -1,0 +1,4 @@
+Version    Date    Notes
+
+0.1    2013-11-08    Original version of Blackhash released.
+0.2    2013-11-11    Removed Boost dependency. Only need C++11 compiler and Crypto++ library now.

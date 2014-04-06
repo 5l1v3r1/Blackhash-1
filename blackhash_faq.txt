@@ -1,0 +1,79 @@
+Blackhash - FAQ
+
+Q. What hash formats will Blackhash load? How do I extract password hashes?
+
+A. The loader assumes it is reading a plain text file with each entry on a line
+by itself and will load hashes in these formats:
+
+    Hash
+    User:Hash
+    User:ID:LMHash:NTHash:Comment:Homedir: (This is the pwdump format as defined by Samba)
+
+Blackhash does not extract password hashes. It just creates and tests filters.
+To extract password hashes, use any of the common, traditional password hash
+extraction tools that are freely available on the Internet. Of course, the tool
+you use will depend on the password store (Local SAM, Active Directory DB,
+etc.) that you are extracting. Some example hash extraction programs are
+pwdump, fgdump, NTDSXtract, etc.
+
+Q. What type of password hashes can be cracked with Blackhash?
+
+A. Any simple, un-salted single-round password hash. Some common examples are
+LM, NT, MD5 and SHA1 hashes. Basically, Blackhash can crack any type of
+password hash that a Rainbow Table can. However, Blackhash provides more
+benefits to hashes that are subject to Pass the Hash attacks. Basically, those
+hashes are password equivalent and should be treated as if they were plain text
+passwords.
+
+Blackhash would work with salted, multiple round hashes, but I have never used
+it on those. No modification needs to be made to the code to do that. The
+system manager would simply need to provide the salts and the number of rounds
+so that the security auditor could create weak test hashes using that
+information. The creation and testing of filters would not change.
+
+
+Q. What are the values used in the Bloom Filter? How many false positives?
+
+A. The rate of false positives P should be roughly 0.0008 in the worst case.
+
+    The number of bits M = 67,108,864
+    The number of hashes N = 1,000,000 (it is typically much lower than this)
+    The number of hash functions K = 2 (The hash functions are MD4 and MD5)
+
+
+Q. Why not just dump the password hashes and send them to the security auditor?
+
+A. That is the traditional method, however, some organizations have policies
+that prohibit that. They are not at liberty to send password hashes to third
+parties, even for the purpose of security audits. Or, they have internal
+security teams that are separate from production support teams and should not
+have access to production password hashes. Also, there's a great deal of risk
+associated with sending password hashes to others especially for hashes that
+are password equivalent (Pass the Hash attacks). In cases such as this,
+Blackhash may be useful.
+
+
+Q. Why do you call it Blackhash?
+
+A. The name is taken from Black Box Testing. "A method of software testing that
+examines the functionality of an application without peering into its internal
+structures or workings." With Blackhash, a security auditor could test your
+Microsoft Active Directory hashes without having access to the hashes.
+
+
+Q. How can I tell what version of Blackhash I'm running?
+
+A. Execute bh without any arguments and it will display the version number.
+
+
+Q. What programming language is Blackhash written in? Will it run on my
+computer? May I download the source code?
+
+A. Blackhash is written in C++. It uses the Boost and Crypto++ libraries.  It
+can be built on most any modern desktop or server operating system (Windows,
+Mac, Linux, BSD systems, etc). Version 0.2 and later require a C++11 compiler
+and thus do not need boost.  Blackhash is distributed under the GPL license and
+full source code is available.
+
+End
+
